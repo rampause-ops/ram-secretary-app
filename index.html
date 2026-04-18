@@ -685,24 +685,6 @@ const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // ════════════════════════════════════════════════════════
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-  supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-  } else {
-    document.getElementById('loginScreen').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-  }
-});
-  supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    console.log("User logged in");
-    // show dashboard
-  } else {
-    console.log("User logged out");
-    // show login screen
-  }
-});
 
 // ════════════════════════════════════════════════════════
 //  STATE
@@ -766,40 +748,29 @@ async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pw = document.getElementById('loginPw').value;
   const errEl = document.getElementById('loginError');
-
   errEl.classList.remove('show');
-
   if (!email || !pw) {
     errEl.textContent = 'Jaza sehemu zote / Fill all fields';
     errEl.classList.add('show');
     return;
   }
-
   setBtnLoading('loginBtn', true);
-
   const { data, error } = await sb.auth.signInWithPassword({
     email,
     password: pw
   });
-
   setBtnLoading('loginBtn', false);
-
   if (error) {
     errEl.textContent = 'Barua pepe au nywila si sahihi / Email or password incorrect';
     errEl.classList.add('show');
     document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
     return;
   }
-
   // ✅ SUCCESS LOGIN
   console.log("Login successful", data);
-
   errEl.classList.remove('show');
-
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-
   document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
+  showApp();
 }
 
 async function doRegister() {
