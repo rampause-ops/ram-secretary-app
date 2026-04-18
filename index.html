@@ -685,6 +685,15 @@ const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // ════════════════════════════════════════════════════════
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+  supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    console.log("User logged in");
+    // show dashboard
+  } else {
+    console.log("User logged out");
+    // show login screen
+  }
+});
 
 // ════════════════════════════════════════════════════════
 //  STATE
@@ -758,7 +767,22 @@ async function doLogin() {
     errEl.classList.add('show');
     document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
   }
-}
+if (error) {
+  errEl.textContent = 'Barua pepe au nywila si sahihi / Email or password incorrect';
+  errEl.classList.add('show');
+  document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
+}else {
+  // SUCCESS LOGIN
+  console.log("Login successful");
+
+  errEl.classList.remove('show');
+
+  // reset button
+  document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
+
+  // move to dashboard / reload app
+  location.reload();
+}}
 
 async function doRegister() {
   const name = document.getElementById('regName').value.trim();
@@ -786,6 +810,13 @@ async function doRegister() {
 
 async function doSignOut() {
   await sb.auth.signOut();
+
+  // CLEAR INPUT FIELDS
+  document.querySelector('input[type="email"]').value = '';
+  document.querySelector('input[type="password"]').value = '';
+
+  // RESET UI STATE
+  location.reload(); 
 }
 
 // ════════════════════════════════════════════════════════
