@@ -687,6 +687,15 @@ const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+  } else {
+    document.getElementById('loginScreen').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+  }
+});
+  supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
     console.log("User logged in");
     // show dashboard
   } else {
@@ -781,7 +790,8 @@ if (error) {
   document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
 
   // move to dashboard / reload app
-  location.reload();
+  document.getElementById('loginScreen').style.display = 'none';
+document.getElementById('dashboard').style.display = 'block';
 }}
 
 async function doRegister() {
