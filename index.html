@@ -764,35 +764,43 @@ function setBtnLoading(id, loading) {
 
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
-  const pw    = document.getElementById('loginPw').value;
+  const pw = document.getElementById('loginPw').value;
   const errEl = document.getElementById('loginError');
+
   errEl.classList.remove('show');
-  if (!email || !pw) { errEl.textContent='Jaza sehemu zote / Fill all fields'; errEl.classList.add('show'); return; }
+
+  if (!email || !pw) {
+    errEl.textContent = 'Jaza sehemu zote / Fill all fields';
+    errEl.classList.add('show');
+    return;
+  }
+
   setBtnLoading('loginBtn', true);
-  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+
+  const { data, error } = await sb.auth.signInWithPassword({
+    email,
+    password: pw
+  });
+
   setBtnLoading('loginBtn', false);
+
   if (error) {
     errEl.textContent = 'Barua pepe au nywila si sahihi / Email or password incorrect';
     errEl.classList.add('show');
     document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
+    return;
   }
-if (error) {
-  errEl.textContent = 'Barua pepe au nywila si sahihi / Email or password incorrect';
-  errEl.classList.add('show');
-  document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
-}else {
-  // SUCCESS LOGIN
-  console.log("Login successful");
+
+  // ✅ SUCCESS LOGIN
+  console.log("Login successful", data);
 
   errEl.classList.remove('show');
 
-  // reset button
-  document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
-
-  // move to dashboard / reload app
   document.getElementById('loginScreen').style.display = 'none';
-document.getElementById('dashboard').style.display = 'block';
-}}
+  document.getElementById('dashboard').style.display = 'block';
+
+  document.getElementById('loginBtn').innerHTML = '<span>Ingia / Sign In</span>';
+}
 
 async function doRegister() {
   const name = document.getElementById('regName').value.trim();
